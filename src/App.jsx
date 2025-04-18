@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
+import Quagga from "quagga"; // quagga2 de kullanabilirsin
 
 const App = () => {
   const [barcode, setBarcode] = useState("");
@@ -26,38 +26,46 @@ const App = () => {
 
   const startScanner = () => {
     setScanning(true);
-
-    // DOM oluşması için bir tık gecikme
-    setTimeout(() => {
-      const html5QrCode = new Html5Qrcode("reader");
-      scannerRef.current = html5QrCode;
-
-      html5QrCode.start(
-        { facingMode: "environment" },
-        {
-          fps: 100,
-          qrbox: { width: 200, height: 200 },
-          formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
+    Quagga.init(
+      {
+        inputStream: {
+          name: "Live",
+          type: "LiveStream",
+          target: document.querySelector("#reader"),
+          constraints: {
+            facingMode: "environment", // Arka kamera
+          },
         },
-        (decodedText) => {
-          html5QrCode.stop();
-          setBarcode(decodedText);
+        decoder: {
+          readers: ["ean_reader"], // EAN-13 barkodları için
+        },
+        locate: true,
+      },
+      (err) => {
+        if (err) {
+          console.error("Quagga init error:", err);
+          setError("Kamera başlatılamadı.");
           setScanning(false);
-          fetchProduct(decodedText);
-        },
-        (err) => {
-          console.warn("Tarama hatası", err);
+          return;
         }
-      );
-    }, 300); // 300ms sonra DOM kesin oluşmuş olur
+        Quagga.start();
+      }
+    );
+
+    Quagga.onDetected((result) => {
+      const code = result.codeResult.code;
+      if (code) {
+        Quagga.stop();
+        setBarcode(code);
+        setScanning(false);
+        fetchProduct(code);
+      }
+    });
   };
 
   const stopScanner = () => {
-    if (scannerRef.current) {
-      scannerRef.current.stop().then(() => {
-        setScanning(false);
-      });
-    }
+    Quagga.stop();
+    setScanning(false);
   };
 
   const handleSubmit = (e) => {
@@ -87,7 +95,7 @@ const App = () => {
         {scanning ? "Kamerayı Kapat" : "📷 Kameradan Oku"}
       </button>
 
-      {scanning && <div id="reader" style={{ width: "200px", marginTop: "1rem" }}></div>}
+      <div id="reader" style={{ width: "300px", height: "200px", marginTop: "1rem" }}></div>
 
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
@@ -97,7 +105,7 @@ const App = () => {
               backgroundColor: "#f4f4f4",
               padding: "1rem",
               borderRadius: "8px",
-              overflowX: "auto"
+              overflowX: "auto",
             }}
           >
             {JSON.stringify(productData, null, 2)}
