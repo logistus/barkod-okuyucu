@@ -35,7 +35,7 @@ const App = () => {
       html5QrCode.start(
         { facingMode: "environment" },
         {
-          fps: 10,
+          fps: 100,
           qrbox: 250,
           formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
         },
@@ -89,7 +89,7 @@ const App = () => {
         {scanning ? "Kamerayı Kapat" : "📷 Kameradan Oku"}
       </button>
 
-      {scanning && <div id="reader" style={{ width: "200px", marginTop: "1rem" }}></div>}
+      {scanning && <div id="reader" style={{ width: "300px", marginTop: "1rem" }}></div>}
 
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
