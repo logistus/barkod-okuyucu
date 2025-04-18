@@ -26,26 +26,30 @@ const App = () => {
 
   const startScanner = () => {
     setScanning(true);
-    const html5QrCode = new Html5Qrcode("reader");
-    scannerRef.current = html5QrCode;
 
-    html5QrCode.start(
-      { facingMode: "environment" },
-      {
-        fps: 10,
-        qrbox: 250,
-        formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
-      },
-      (decodedText) => {
-        html5QrCode.stop();
-        setBarcode(decodedText);
-        setScanning(false);
-        fetchProduct(decodedText);
-      },
-      (err) => {
-        console.warn("Tarama hatası", err);
-      }
-    );
+    // DOM oluşması için bir tık gecikme
+    setTimeout(() => {
+      const html5QrCode = new Html5Qrcode("reader");
+      scannerRef.current = html5QrCode;
+
+      html5QrCode.start(
+        { facingMode: "environment" },
+        {
+          fps: 10,
+          qrbox: 250,
+          formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
+        },
+        (decodedText) => {
+          html5QrCode.stop();
+          setBarcode(decodedText);
+          setScanning(false);
+          fetchProduct(decodedText);
+        },
+        (err) => {
+          console.warn("Tarama hatası", err);
+        }
+      );
+    }, 300); // 300ms sonra DOM kesin oluşmuş olur
   };
 
   const stopScanner = () => {
