@@ -101,7 +101,10 @@ const App = () => {
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
         {productData && (
           <>
-            <h1>{productData.data.name}</h1>
+            <h2>{productData.data.name}</h2>
+            <h3>{productData.data.sku}</h3>
+            <h3>{productData.data.regularPrice} TL</h3>
+            <h3>{productData.data.loyaltyPrice} TL</h3>
           </>
         )}
       </div>
