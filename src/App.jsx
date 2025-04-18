@@ -1,26 +1,27 @@
-import React, { useEffect, useRef, useState } from "react";
-import Quagga from "quagga"; // quagga2 de kullanabilirsin
+import React, { useRef, useState } from "react";
+import { BrowserMultiFormatReader } from "@zxing/browser";
 
 const App = () => {
   const [barcode, setBarcode] = useState("");
   const [productData, setProductData] = useState(null);
   const [error, setError] = useState("");
   const [scanning, setScanning] = useState(false);
-  const scannerRef = useRef(null);
+  const videoRef = useRef(null);
+  const codeReader = useRef(null);
 
   const fetchProduct = async (barcode) => {
     try {
       const apiUrl = `https://barkod-okuyucu-server.vercel.app/barcode/${barcode}`;
       const response = await fetch(apiUrl);
-
       if (!response.ok) throw new Error("Ürün bulunamadı.");
-
       const data = await response.json();
+
       if (data.successful) {
         setProductData(data);
         setError("");
       } else {
-        setError("Ürün bulunamadı")
+        setError("Ürün bulunamadı");
+        setProductData(null);
       }
     } catch (err) {
       setError(err.message);
@@ -28,47 +29,37 @@ const App = () => {
     }
   };
 
-  const startScanner = () => {
+  const startScanner = async () => {
     setScanning(true);
-    Quagga.init(
-      {
-        inputStream: {
-          name: "Live",
-          type: "LiveStream",
-          target: document.querySelector("#reader"),
-          constraints: {
-            facingMode: "environment", // Arka kamera
-          },
-        },
-        decoder: {
-          readers: ["ean_reader"], // EAN-13 barkodları için
-        },
-        locate: true,
-      },
-      (err) => {
-        if (err) {
-          console.error("Quagga init error:", err);
-          setError("Kamera başlatılamadı.");
-          setScanning(false);
-          return;
-        }
-        Quagga.start();
-      }
-    );
+    setProductData(null);
+    setError("");
 
-    Quagga.onDetected((result) => {
-      const code = result.codeResult.code;
-      if (code) {
-        Quagga.stop();
-        setBarcode(code);
-        setScanning(false);
-        fetchProduct(code);
-      }
-    });
+    codeReader.current = new BrowserMultiFormatReader();
+
+    try {
+      await codeReader.current.decodeFromVideoDevice(
+        null,
+        videoRef.current,
+        (result, err) => {
+          if (result) {
+            const code = result.getText();
+            stopScanner();
+            setBarcode(code);
+            fetchProduct(code);
+          }
+        }
+      );
+    } catch (err) {
+      console.error("Kamera başlatılamadı:", err);
+      setError("Kamera başlatılamadı.");
+      setScanning(false);
+    }
   };
 
   const stopScanner = () => {
-    Quagga.stop();
+    if (codeReader.current) {
+      codeReader.current.reset();
+    }
     setScanning(false);
   };
 
@@ -99,7 +90,9 @@ const App = () => {
         {scanning ? "Kamerayı Kapat" : "📷 Kameradan Oku"}
       </button>
 
-      <div id="reader" style={{ width: "200px", marginTop: "1rem" }}></div>
+      <div style={{ marginTop: "1rem" }}>
+        <video ref={videoRef} style={{ width: "300px", height: "200px" }} />
+      </div>
 
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
@@ -108,10 +101,9 @@ const App = () => {
             <h2>{productData.data.name}</h2>
             <div><strong>Mal No: </strong>{productData.data.sku}</div>
             <div><strong>Fiyat: </strong> {(productData.data.regularPrice / 100).toString().replace(".", ",")} TL</div>
-            {productData.data.regularPrice != productData.data.loyaltyPrice && (
+            {productData.data.regularPrice !== productData.data.loyaltyPrice && (
               <div><strong>İndirimli Fiyat: </strong> {(productData.data.loyaltyPrice / 100).toString().replace(".", ",")} TL</div>
             )}
-
           </>
         )}
       </div>
