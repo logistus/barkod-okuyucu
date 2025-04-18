@@ -101,8 +101,8 @@ const App = () => {
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
         {productData && (
           <>
-            <h1>{productData.name}</h1>
-            <img src={productData.images[0].urls.PRODUCT_DETAIL} />
+            <h1>{productData.data.name}</h1>
+            <img src={productData.data.images[0].urls.PRODUCT_DETAIL} />
           </>
         )}
       </div>
