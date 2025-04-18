@@ -100,16 +100,10 @@ const App = () => {
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
         {productData && (
-          <pre
-            style={{
-              backgroundColor: "#f4f4f4",
-              padding: "1rem",
-              borderRadius: "8px",
-              overflowX: "auto",
-            }}
-          >
-            {JSON.stringify(productData, null, 2)}
-          </pre>
+          <>
+            <h1>{productData.name}</h1>
+            <img src={productData.images[0].urls.PRODUCT_DETAIL} />
+          </>
         )}
       </div>
     </div>
