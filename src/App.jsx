@@ -36,7 +36,7 @@ const App = () => {
         { facingMode: "environment" },
         {
           fps: 100,
-          qrbox: { width: 500, height: 50 },
+          qrbox: { width: 200, height: 50 },
           formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
         },
         (decodedText) => {
