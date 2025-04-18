@@ -102,10 +102,10 @@ const App = () => {
         {productData && (
           <>
             <h2>{productData.data.name}</h2>
-            <div><h3>Mal No: </h3>{productData.data.sku}</div>
-            <div><h3>Fiyat: </h3> {productData.data.regularPrice / 1000} TL</div>
+            <div><strong>Mal No: </strong>{productData.data.sku}</div>
+            <div><strong>Fiyat: </strong> {productData.data.regularPrice / 100} TL</div>
             {productData.data.regularPrice != productData.data.loyaltyPrice && (
-              <div><h3>İndirimli Fiyat: </h3> {productData.data.loyaltyPrice / 1000} TL</div>
+              <div><strong>İndirimli Fiyat: </strong> {productData.data.loyaltyPrice / 100} TL</div>
             )}
 
           </>
