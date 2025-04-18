@@ -77,7 +77,7 @@ const App = () => {
     <div style={{ padding: "2rem", fontFamily: "Arial" }}>
       <form onSubmit={handleSubmit}>
         <input
-          type="text"
+          type="number"
           value={barcode}
           onChange={(e) => setBarcode(e.target.value)}
           placeholder="Barkod numarasını girin"
