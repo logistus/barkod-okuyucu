@@ -36,7 +36,7 @@ const App = () => {
         { facingMode: "environment" },
         {
           fps: 100,
-          qrbox: { width: 200, height: 50 },
+          qrbox: { width: 200, height: 60 },
           formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
         },
         (decodedText) => {
@@ -89,7 +89,7 @@ const App = () => {
         {scanning ? "Kamerayı Kapat" : "📷 Kameradan Oku"}
       </button>
 
-      {scanning && <div id="reader" style={{ width: "300px", marginTop: "1rem" }}></div>}
+      {scanning && <div id="reader" style={{ width: "200px", height: "60px", marginTop: "1rem" }}></div>}
 
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
