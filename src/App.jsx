@@ -36,7 +36,7 @@ const App = () => {
         { facingMode: "environment" },
         {
           fps: 100,
-          qrbox: { width: 200, height: 60 },
+          qrbox: { width: 200, height: 200 },
           formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
         },
         (decodedText) => {
@@ -67,8 +67,6 @@ const App = () => {
 
   return (
     <div style={{ padding: "2rem", fontFamily: "Arial" }}>
-      <h2>📦 Barkod ile Ürün Bilgisi Getir</h2>
-
       <form onSubmit={handleSubmit}>
         <input
           type="text"
@@ -89,7 +87,7 @@ const App = () => {
         {scanning ? "Kamerayı Kapat" : "📷 Kameradan Oku"}
       </button>
 
-      {scanning && <div id="reader" style={{ width: "200px", height: "60px", marginTop: "1rem" }}></div>}
+      {scanning && <div id="reader" style={{ width: "200px", marginTop: "1rem" }}></div>}
 
       <div style={{ marginTop: "2rem" }}>
         {error && <p style={{ color: "red" }}>⚠️ {error}</p>}
