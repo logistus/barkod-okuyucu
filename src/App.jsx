@@ -16,8 +16,12 @@ const App = () => {
       if (!response.ok) throw new Error("Ürün bulunamadı.");
 
       const data = await response.json();
-      setProductData(data);
-      setError("");
+      if (data.successful) {
+        setProductData(data);
+        setError("");
+      } else {
+        setError("Ürün bulunamadı")
+      }
     } catch (err) {
       setError(err.message);
       setProductData(null);
@@ -74,7 +78,7 @@ const App = () => {
   };
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "Arial" }}>
+    <div>
       <form onSubmit={handleSubmit}>
         <input
           type="number"
@@ -103,9 +107,9 @@ const App = () => {
           <>
             <h2>{productData.data.name}</h2>
             <div><strong>Mal No: </strong>{productData.data.sku}</div>
-            <div><strong>Fiyat: </strong> {productData.data.regularPrice / 100} TL</div>
+            <div><strong>Fiyat: </strong> {(productData.data.regularPrice / 100).toString().replace(".", ",")} TL</div>
             {productData.data.regularPrice != productData.data.loyaltyPrice && (
-              <div><strong>İndirimli Fiyat: </strong> {productData.data.loyaltyPrice / 100} TL</div>
+              <div><strong>İndirimli Fiyat: </strong> {(productData.data.loyaltyPrice / 100).toString().replace(".", ",")} TL</div>
             )}
 
           </>
