@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeSupportedFormats } from "html5-qrcode";
 
 const App = () => {
   const [barcode, setBarcode] = useState("");
@@ -34,6 +34,7 @@ const App = () => {
       {
         fps: 10,
         qrbox: 250,
+        formatsToSupport: [Html5QrcodeSupportedFormats.EAN_13]
       },
       (decodedText) => {
         html5QrCode.stop();
